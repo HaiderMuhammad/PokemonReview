@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using PokemonReview.data;
 using Microsoft.EntityFrameworkCore;
 using PokemonReview;
@@ -9,11 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services
 builder.Services.AddControllers(); // For full controller support
 builder.Services.AddTransient<Seed>();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddEndpointsApiExplorer(); // Needed for Swagger
 builder.Services.AddSwaggerGen(); // Generates Swagger/OpenAPI docs
 builder.Services.AddDbContext<DataContext>(options =>
