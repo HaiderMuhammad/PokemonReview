@@ -8,7 +8,7 @@ public interface IReviewRepository
     
     Review GetReview(int reviewId);
     
-    ICollection<Review> GetReviewsOfPokemon();
+    ICollection<Review> GetReviewsOfPokemon(int pokeId);
     
     bool ReviewExists(int reviewId);
 }
