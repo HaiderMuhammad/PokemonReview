@@ -46,6 +46,22 @@ public class OwnerController: Controller
                return BadRequest(ModelState);
 
           return Ok(owner);
-
      }
+     
+     [HttpGet("{ownerId}/pokemon")]
+     [ProducesResponseType(200, Type = typeof(Pokemon))]
+     [ProducesResponseType(400)]
+     public IActionResult GetPokemonByOwner(int ownerId)
+     {
+          if (!_ownerRepository.OwnerExists(ownerId))
+               return NotFound();
+
+          var pokemon = _mapper.Map<OwnerDto>(_ownerRepository.GetPokemonByOwner(ownerId));
+
+          if (!ModelState.IsValid)
+               return BadRequest(ModelState);
+
+          return Ok(pokemon);
+     }
+     
 }
