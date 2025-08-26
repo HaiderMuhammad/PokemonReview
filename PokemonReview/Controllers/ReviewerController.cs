@@ -32,4 +32,21 @@ public class ReviewerController: Controller
         return Ok(reviewers);
     }
     
+    [HttpGet("{reviewerId}")]
+    [ProducesResponseType(200, Type = typeof(Reviewer))]
+    [ProducesResponseType(400)]
+    public IActionResult GetReviewer(int reviewerId)
+    {
+        if (!_reviewerRepository.ReviewerExists(reviewerId))
+            return NotFound();
+
+        var reviewer = _mapper.Map<ReviewerDto>(_reviewerRepository
+            .GetReviewer(reviewerId));
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(reviewer);
+    }
+    
 }
