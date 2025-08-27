@@ -1,3 +1,4 @@
+using PokemonReview.Dto;
 using PokemonReview.Models;
 
 namespace PokemonReview.Interfaces;
@@ -8,11 +9,12 @@ public interface IPokemonRepository
     
     Pokemon GetPokemon(int id);
     Pokemon GetPokemon(string name);
+    Pokemon GetPokemonTrimToUpper(PokemonDto pokemonCreate);
     
     decimal GetPokemonRating(int pokeId);
     
     bool PokemonExists(int pokeId);
     
-    bool createPokemon(int ownerId, int categoryId, Pokemon pokemon);
+    bool CreatePokemon(int ownerId, int categoryId, Pokemon pokemon);
     bool Save();
 }

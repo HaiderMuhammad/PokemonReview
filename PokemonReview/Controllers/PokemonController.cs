@@ -11,8 +11,10 @@ namespace PokemonReview.Controllers;
 public class PokemonController : Controller
 {
     private readonly IPokemonRepository _pokemonRepository;
+    private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
-    public PokemonController(IPokemonRepository _pokemonRepository, IMapper  mapper)
+    public PokemonController(IPokemonRepository _pokemonRepository,
+        IReviewRepository reviewRepository, IMapper  mapper)
     {
         this._pokemonRepository = _pokemonRepository;
         this._mapper = mapper;
@@ -44,6 +46,37 @@ public class PokemonController : Controller
 
         return Ok(pokemon);
 
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult CreatePokemon([FromQuery] int ownerId, [FromQuery] int catId, [FromBody] PokemonDto pokemonCreate)
+    {
+        if (pokemonCreate == null)
+            return BadRequest(ModelState);
+
+        var pokemons = _pokemonRepository.GetPokemonTrimToUpper(pokemonCreate);
+
+        if (pokemons != null)
+        {
+            ModelState.AddModelError("", "Owner already exists");
+            return StatusCode(422, ModelState);
+        }
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var pokemonMap = _mapper.Map<Pokemon>(pokemonCreate);
+
+      
+        if (!_pokemonRepository.CreatePokemon(ownerId, catId, pokemonMap))
+        {
+            ModelState.AddModelError("", "Something went wrong while savin");
+            return StatusCode(500, ModelState);
+        }
+
+        return Ok("Successfully created");
     }
 
     [HttpGet("{pokeId}/rating")]
